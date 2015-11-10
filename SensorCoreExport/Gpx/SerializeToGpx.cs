@@ -10,7 +10,7 @@ namespace SensorCoreExport.Gpx
 {
     public class SerializeToGpx
     {
-        readonly XNamespace sce = "http://www.SensorCoreExport.com";
+        readonly XNamespace _sce = "http://www.SensorCoreExport.com";
 
         public void Serialize(IEnumerable<TrackPoint> trackpoints, Stream destintion)
         {
@@ -22,7 +22,7 @@ namespace SensorCoreExport.Gpx
                 trk = GetTracks(waypointsPerDay).ToArray()
             };
             var ns = new XmlSerializerNamespaces();
-            ns.Add("sce", sce.NamespaceName);
+            ns.Add("sce", _sce.NamespaceName);
             var ser = new XmlSerializer(typeof(gpxType));
             ser.Serialize(destintion, gpx, ns);
         }
@@ -68,9 +68,9 @@ namespace SensorCoreExport.Gpx
                 {
                     Any = new[]
                     {
-                        new XElement(sce + "Id", point.Id),
-                        new XElement(sce + "Radius", point.Radius),
-                        new XElement(sce + "LengthOfStay", point.LengthOfStay.ToString("g"))
+                        new XElement(_sce + "Id", point.Id),
+                        new XElement(_sce + "Radius", point.Radius),
+                        new XElement(_sce + "LengthOfStay", point.LengthOfStay.ToString("g"))
                     }
                 }
             };
