@@ -41,7 +41,7 @@ namespace SensorCoreExport.Services
         public async Task<IStorageItem> ExportRoutes(DateTime from, DateTime until)
         {
             var points = await _tracker.GetTrackPointsAsync(from, until-from);
-            var orderedPoints = points.OrderBy(p => p.Timestamp);
+            var orderedPoints = points.Where(p => p.Timestamp >= from).OrderBy(p => p.Timestamp);
 
             var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"trackpoints.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", CreationCollisionOption.ReplaceExisting);
             using (var stream = await file.OpenStreamForWriteAsync())

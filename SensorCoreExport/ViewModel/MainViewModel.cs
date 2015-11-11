@@ -105,7 +105,7 @@ namespace SensorCoreExport.ViewModel
             await ApplicationData.Current.ClearAsync(ApplicationDataLocality.Temporary);
 
             var from = From.Date;
-            var until = Until.Date.AddDays(1);
+            var until = Until.Date.AddDays(1).AddMilliseconds(1);
             var exportFiles = GetExportFiles(from, until).ToArray();
 
             if (exportFiles.Any())
