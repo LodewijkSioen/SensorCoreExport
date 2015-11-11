@@ -2,45 +2,27 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Lumia.Sense;
 using Windows.Storage;
 
 namespace SensorCoreExport.Services
 {
     public class RouteExporter
+        : BaseExporter<ITrackPointMonitor>
     {
-        Lumia.Sense.TrackPointMonitor _tracker;
-
-        public bool IsEnabled { get; private set; }
-
-        public async Task<bool> Initialize()
+        protected override async Task<ITrackPointMonitor> GetDefaultSensor()
         {
-            IsEnabled = await Lumia.Sense.TrackPointMonitor.IsSupportedAsync();
-            if (IsEnabled)
-            {
-                _tracker = await Lumia.Sense.TrackPointMonitor.GetDefaultAsync();
-            }
-            return IsEnabled;
+            return await TrackPointMonitor.GetDefaultAsync();
         }
 
-        public async Task Activate()
+        protected override async Task<bool> GetIsSupported()
         {
-            if (IsEnabled)
-            {
-                await _tracker.ActivateAsync();
-            }
-        }        
-
-        public async Task Deactivate()
-        {
-            if (IsEnabled)
-            {
-                await _tracker.DeactivateAsync();
-            }
+            return await TrackPointMonitor.IsSupportedAsync();
         }
 
-        public async Task<IStorageItem> ExportRoutes(DateTime from, DateTime until)
+        public override async Task<IStorageItem> Export(DateTimeOffset from, DateTimeOffset until)
         {
-            var points = await _tracker.GetTrackPointsAsync(from, until-from);
+            var points = await Sensor.GetTrackPointsAsync(from, until-from);
             var orderedPoints = points.Where(p => p.Timestamp >= from).OrderBy(p => p.Timestamp);
 
             var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"trackpoints.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", CreationCollisionOption.ReplaceExisting);
@@ -50,6 +32,6 @@ namespace SensorCoreExport.Services
             }
 
             return file;
-        }
+        }        
     }
 }
