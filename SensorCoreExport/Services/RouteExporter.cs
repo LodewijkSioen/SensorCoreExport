@@ -10,26 +10,29 @@ namespace SensorCoreExport.Services
     {
         Lumia.Sense.TrackPointMonitor _tracker;
 
-        public async Task Activate()
+        public bool IsEnabled { get; private set; }
+
+        public async Task<bool> Initialize()
         {
-            if (_tracker == null)
+            IsEnabled = await Lumia.Sense.TrackPointMonitor.IsSupportedAsync();
+            if (IsEnabled)
             {
                 _tracker = await Lumia.Sense.TrackPointMonitor.GetDefaultAsync();
             }
-            else
+            return IsEnabled;
+        }
+
+        public async Task Activate()
+        {
+            if (IsEnabled)
             {
                 await _tracker.ActivateAsync();
             }
-        }
-
-        public async Task<bool> IsEnabled()
-        {
-            return await Lumia.Sense.TrackPointMonitor.IsSupportedAsync();
-        }
+        }        
 
         public async Task Deactivate()
         {
-            if (_tracker != null)
+            if (IsEnabled)
             {
                 await _tracker.DeactivateAsync();
             }

@@ -19,7 +19,7 @@ namespace SensorCoreExport.ViewModel
         {
             _routeExporter = new RouteExporter();
 
-            Export = new RelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled);
+            Export = new RelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes);
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
@@ -31,7 +31,7 @@ namespace SensorCoreExport.ViewModel
             ExportRoutes = false;
         }
 
-        public ICommand Export { get; private set; }
+        public RelayCommand Export { get; private set; }
         public ICommand ActivateTracker { get; private set; }
         public ICommand DeactivateTracker { get; private set; }
         public RelayCommand<DataRequest> ShareRequested { get; private set; }
@@ -66,15 +66,25 @@ namespace SensorCoreExport.ViewModel
             {
                 _exportRoutes = value;
                 RaisePropertyChanged();
+                Export.RaiseCanExecuteChanged();
             }
         }
 
-        public bool IsRouteTrackingEnabled { get; private set; }
-
+        private bool _isRouteTrackingEnabled;
+        public bool IsRouteTrackingEnabled
+        {
+            get { return _isRouteTrackingEnabled; }
+            set
+            {
+                _isRouteTrackingEnabled = value;
+                RaisePropertyChanged();
+                Export.RaiseCanExecuteChanged();
+            }
+        }
         //TODO: this can be better
         public async Task Initialize()
-        {
-            IsRouteTrackingEnabled = await _routeExporter.IsEnabled();
+        {   
+            IsRouteTrackingEnabled = await _routeExporter.Initialize();
             ExportRoutes = IsRouteTrackingEnabled;
         }
 
@@ -91,7 +101,7 @@ namespace SensorCoreExport.ViewModel
         private async void OnShareRequested(DataRequest request)
         {
             var defferal = request.GetDeferral();
-
+            
             await ApplicationData.Current.ClearAsync(ApplicationDataLocality.Temporary);
 
             var from = From.Date;
