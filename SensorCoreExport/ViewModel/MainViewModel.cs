@@ -36,8 +36,8 @@ namespace SensorCoreExport.ViewModel
         public ICommand DeactivateTracker { get; private set; }
         public RelayCommand<DataRequest> ShareRequested { get; private set; }
         
-        private DateTime _from;
-        public DateTime From
+        private DateTimeOffset _from;
+        public DateTimeOffset From
         {
             get { return _from; }
             set
@@ -47,8 +47,8 @@ namespace SensorCoreExport.ViewModel
             }
         }
 
-        private DateTime _until;
-        public DateTime Until
+        private DateTimeOffset _until;
+        public DateTimeOffset Until
         {
             get { return _until; }
             set
