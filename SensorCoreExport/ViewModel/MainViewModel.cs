@@ -17,7 +17,9 @@ namespace SensorCoreExport.ViewModel
 
         public MainViewModel()
         {
-            _routeExporter = new RouteExporter();
+            var serializer = new Gpx.GpxSerializer();
+            var ioHelper = new IOHelper();
+            _routeExporter = new RouteExporter(ioHelper, serializer);
 
             Export = new RelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes);
             ActivateTracker = new RelayCommand(OnScreenVisible);
@@ -84,7 +86,9 @@ namespace SensorCoreExport.ViewModel
         //TODO: this can be better
         public async Task Initialize()
         {   
-            IsRouteTrackingEnabled = await _routeExporter.Initialize();
+            await _routeExporter.Initialize();
+
+            IsRouteTrackingEnabled = _routeExporter.IsEnabled;
             ExportRoutes = IsRouteTrackingEnabled;
         }
 
@@ -105,7 +109,7 @@ namespace SensorCoreExport.ViewModel
             await ApplicationData.Current.ClearAsync(ApplicationDataLocality.Temporary);
 
             var from = From.Date;
-            var until = Until.Date.AddDays(1).AddMilliseconds(1);
+            var until = Until.Date.AddDays(1).AddMilliseconds(-1);
             var exportFiles = GetExportFiles(from, until).ToArray();
 
             if (exportFiles.Any())
@@ -126,7 +130,7 @@ namespace SensorCoreExport.ViewModel
         {
             if (ExportRoutes)
             {
-                yield return _routeExporter.ExportRoutes(from, until);
+                yield return _routeExporter.Export(from, until);
             }
         }
     }

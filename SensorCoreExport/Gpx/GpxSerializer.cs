@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace SensorCoreExport.Gpx
 {
-    public class SerializeToGpx
+    public class GpxSerializer
     {
         readonly XNamespace _sce = "http://www.SensorCoreExport.com";
 
@@ -17,7 +17,6 @@ namespace SensorCoreExport.Gpx
             var waypointsPerDay = trackpoints.GroupBy(w => w.Timestamp.Date);
             var gpx = new gpxType
             {
-                version = "1.1",
                 creator = "SensorCore Export",
                 trk = GetTracks(waypointsPerDay).ToArray()
             };
@@ -25,6 +24,11 @@ namespace SensorCoreExport.Gpx
             ns.Add("sce", _sce.NamespaceName);
             var ser = new XmlSerializer(typeof(gpxType));
             ser.Serialize(destintion, gpx, ns);
+        }
+
+        public void Serialize(IEnumerable<Place> places, Stream Destination)
+        {
+            //TODO
         }
 
         private IEnumerable<trkType> GetTracks(IEnumerable<IGrouping<DateTime, TrackPoint>> tracksPerDay)

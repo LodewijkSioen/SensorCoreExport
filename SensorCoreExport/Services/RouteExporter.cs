@@ -1,15 +1,24 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Lumia.Sense;
 using Windows.Storage;
+using SensorCoreExport.Gpx;
 
 namespace SensorCoreExport.Services
 {
     public class RouteExporter
         : BaseExporter<ITrackPointMonitor>
     {
+        private readonly IOHelper _ioHelper;
+        private GpxSerializer _serializer;
+
+        public RouteExporter(IOHelper ioHelper, GpxSerializer serializer)
+        {
+            _ioHelper = ioHelper;
+            _serializer = serializer;
+        }
+
         protected override async Task<ITrackPointMonitor> GetDefaultSensor()
         {
             return await TrackPointMonitor.GetDefaultAsync();
@@ -25,13 +34,9 @@ namespace SensorCoreExport.Services
             var points = await Sensor.GetTrackPointsAsync(from, until-from);
             var orderedPoints = points.Where(p => p.Timestamp >= from).OrderBy(p => p.Timestamp);
 
-            var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"trackpoints.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", CreationCollisionOption.ReplaceExisting);
-            using (var stream = await file.OpenStreamForWriteAsync())
-            {
-                new Gpx.SerializeToGpx().Serialize(orderedPoints, stream);
-            }
-
-            return file;
+            return await _ioHelper.WriteToFile($"SensorCore.Routes.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", s => {
+                _serializer.Serialize(orderedPoints, s);
+            });
         }        
     }
 }

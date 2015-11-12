@@ -84,13 +84,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Gpx\SerializeToGpx.cs" />
+    <Compile Include="Gpx\GpxSerializer.cs" />
     <Compile Include="Gpx\XmlModel.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BaseExporter.cs" />
+    <Compile Include="Services\IOHelper.cs" />
     <Compile Include="Services\PlaceExporter.cs" />
     <Compile Include="Services\RouteExporter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

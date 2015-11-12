@@ -2,12 +2,22 @@
 using System;
 using System.Threading.Tasks;
 using Windows.Storage;
+using SensorCoreExport.Gpx;
 
 namespace SensorCoreExport.Services
 {
     public class PlaceExporter
         : BaseExporter<IPlaceMonitor>
     {
+        private IOHelper _ioHelper;
+        private GpxSerializer _serialize;
+
+        public PlaceExporter(IOHelper ioHelper, Gpx.GpxSerializer serializer)
+        {
+            _ioHelper = ioHelper;
+            _serialize = serializer;
+        }
+
         protected override async Task<IPlaceMonitor> GetDefaultSensor()
         {
             return await PlaceMonitor.GetDefaultAsync();
@@ -21,8 +31,10 @@ namespace SensorCoreExport.Services
         public override async Task<IStorageItem> Export(DateTimeOffset from, DateTimeOffset until)
         {
             var places = await Sensor.GetPlaceHistoryAsync(from, until - from);
-            
-            throw new NotImplementedException();
+
+            return await _ioHelper.WriteToFile($"SensorCore.Places.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", s => {
+                _serialize.Serialize(places, s);
+            });
         }
     }
 }
