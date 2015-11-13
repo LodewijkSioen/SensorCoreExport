@@ -104,6 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.scale-240.png" />
+    <Content Include="Assets\noun_165058_cc.png" />
+    <Content Include="Assets\noun_165058_cc.svg" />
     <Content Include="Assets\share.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />

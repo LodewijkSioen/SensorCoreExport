@@ -11,7 +11,7 @@ namespace SensorCoreExport.Services
         : BaseExporter<ITrackPointMonitor>
     {
         private readonly IOHelper _ioHelper;
-        private GpxSerializer _serializer;
+        private readonly GpxSerializer _serializer;
 
         public RouteExporter(IOHelper ioHelper, GpxSerializer serializer)
         {
