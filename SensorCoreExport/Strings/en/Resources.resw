@@ -129,4 +129,10 @@
   <data name="ExportButton.Label" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="ExportPageTitle.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SettingsButton.Label" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>

@@ -9,7 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding Main, Source={StaticResource Locator}}">
     <StackPanel Margin="12">
-        <TextBlock Style="{ThemeResource HeaderTextBlockStyle}">SensorCore Export</TextBlock>
+        <TextBlock Style="{ThemeResource TitleTextBlockStyle}">SensorCore Export</TextBlock>
+        <TextBlock x:Uid="ExportPageTitle" Text="$Export$" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         <DatePicker x:Uid="DatePickerFrom" Header="$From$" Date="{Binding From, Mode=TwoWay}" />
         <DatePicker x:Uid="DatePickerUntil" Header="$Until$" Date="{Binding Until, Mode=TwoWay}" />
         <CheckBox x:Uid="CheckBoxRoutes" IsChecked="{Binding ExportRoutes, Mode=TwoWay}" IsEnabled="{Binding IsRouteTrackingEnabled, Mode=OneWay}" Content="$Export Routes$"/>
@@ -19,6 +20,11 @@
             <AppBarButton Command="{Binding Export}" x:Uid="ExportButton" Label="$Export$">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/share.png"></BitmapIcon>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton x:Uid="SettingsButton" Label="$Settings$">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Setting"></SymbolIcon>
                 </AppBarButton.Icon>
             </AppBarButton>
         </CommandBar>
