@@ -1,19 +1,6 @@
-/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:SensorCoreExport"
-                           x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-
-  You can also use Blend to do all this with the tool's support.
-  See http://www.galasoft.ch/mvvm
-*/
-
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
 
 namespace SensorCoreExport.ViewModel
@@ -42,6 +29,7 @@ namespace SensorCoreExport.ViewModel
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
+            SimpleIoc.Default.Register<INavigationService>(CreateNavigationService);
             SimpleIoc.Default.Register<MainViewModel>();
         }
 
@@ -52,7 +40,16 @@ namespace SensorCoreExport.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
+
+        private static INavigationService CreateNavigationService()
+        {
+            var navigationService = new NavigationService();
+            navigationService.Configure("Main", typeof(MainPage));
+            navigationService.Configure("Settings", typeof(SettingsPage));
+
+            return navigationService;
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

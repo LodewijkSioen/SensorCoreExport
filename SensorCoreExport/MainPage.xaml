@@ -22,7 +22,7 @@
                     <BitmapIcon UriSource="ms-appx:///Assets/share.png"></BitmapIcon>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton x:Uid="SettingsButton" Label="$Settings$">
+            <AppBarButton Command="{Binding Settings}" x:Uid="SettingsButton" Label="$Settings$">
                 <AppBarButton.Icon>
                     <SymbolIcon Symbol="Setting"></SymbolIcon>
                 </AppBarButton.Icon>

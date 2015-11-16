@@ -7,16 +7,19 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Views;
 using SensorCoreExport.Services;
 
 namespace SensorCoreExport.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly INavigationService _navigationService;
         private readonly RouteExporter _routeExporter;
 
-        public MainViewModel()
+        public MainViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
             var serializer = new Gpx.GpxSerializer();
             var ioHelper = new IOHelper();
             _routeExporter = new RouteExporter(ioHelper, serializer);
@@ -25,6 +28,7 @@ namespace SensorCoreExport.ViewModel
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
+            Settings = new RelayCommand(()=> _navigationService.NavigateTo("Settings"));
 
             From = DateTime.Today;
             Until = DateTime.Today;
@@ -37,6 +41,7 @@ namespace SensorCoreExport.ViewModel
         public ICommand ActivateTracker { get; private set; }
         public ICommand DeactivateTracker { get; private set; }
         public RelayCommand<DataRequest> ShareRequested { get; private set; }
+        public ICommand Settings { get; private set; }
         
         private DateTimeOffset _from;
         public DateTimeOffset From
