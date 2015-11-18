@@ -9,8 +9,8 @@ namespace SensorCoreExport.Services
     public class PlaceExporter
         : BaseExporter<IPlaceMonitor>
     {
-        private IOHelper _ioHelper;
-        private GpxSerializer _serialize;
+        private readonly IOHelper _ioHelper;
+        private readonly GpxSerializer _serialize;
 
         public PlaceExporter(IOHelper ioHelper, Gpx.GpxSerializer serializer)
         {

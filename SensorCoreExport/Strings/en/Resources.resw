@@ -120,6 +120,9 @@
   <data name="AboutPageTitle.Text" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="CheckBoxPlaces.Content" xml:space="preserve">
+    <value>Export Places</value>
+  </data>
   <data name="CheckBoxRoutes.Content" xml:space="preserve">
     <value>Export Routes</value>
   </data>

@@ -12,7 +12,7 @@ namespace SensorCoreExport.Gpx
     {
         readonly XNamespace _sce = "http://www.SensorCoreExport.com";
 
-        public void Serialize(IEnumerable<TrackPoint> trackpoints, Stream destintion)
+        public void Serialize(IEnumerable<TrackPoint> trackpoints, Stream destination)
         {
             var waypointsPerDay = trackpoints.GroupBy(w => w.Timestamp.Date);
             var gpx = new gpxType
@@ -23,12 +23,46 @@ namespace SensorCoreExport.Gpx
             var ns = new XmlSerializerNamespaces();
             ns.Add("sce", _sce.NamespaceName);
             var ser = new XmlSerializer(typeof(gpxType));
-            ser.Serialize(destintion, gpx, ns);
+            ser.Serialize(destination, gpx, ns);
         }
 
-        public void Serialize(IEnumerable<Place> places, Stream Destination)
+        public void Serialize(IEnumerable<Place> places, Stream destination)
         {
-            //TODO
+            var gpx = new gpxType()
+            {
+                creator = "SensorCore Export",
+                wpt = GetWaypoints(places).ToArray()
+            };
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("sce", _sce.NamespaceName);
+            var ser = new XmlSerializer(typeof(gpxType));
+            ser.Serialize(destination, gpx, ns);
+        }
+
+        private IEnumerable<wptType> GetWaypoints(IEnumerable<Place> places)
+        {
+            foreach (var place in places)
+            {
+                yield return new wptType
+                {
+                    lat = (decimal)place.Position.Latitude,
+                    lon = (decimal)place.Position.Longitude,
+                    ele = (decimal)place.Position.Altitude,
+                    eleSpecified = true,
+                    time = place.Timestamp.UtcDateTime,
+                    timeSpecified = true,
+                    src = "Lumia SensorCore",
+                    extensions = new extensionsType
+                    {
+                        Any = new[]
+                    {
+                        new XElement(_sce + "Id", place.Id),
+                        new XElement(_sce + "Radius", place.Radius),
+                        new XElement(_sce + "LengthOfStay", place.LengthOfStay.ToString("g"))
+                    }
+                    }
+                };
+            }
         }
 
         private IEnumerable<trkType> GetTracks(IEnumerable<IGrouping<DateTime, TrackPoint>> tracksPerDay)

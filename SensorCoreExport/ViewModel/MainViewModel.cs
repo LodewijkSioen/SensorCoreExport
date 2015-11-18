@@ -17,13 +17,18 @@ namespace SensorCoreExport.ViewModel
     {
         private readonly INavigationService _navigationService;
         private readonly RouteExporter _routeExporter;
+        private readonly PlaceExporter _placeExporter;
 
-        public MainViewModel(INavigationService navigationService, RouteExporter exporter)
+        public MainViewModel(INavigationService navigationService, RouteExporter routeExporter, PlaceExporter placeExporter)
         {
             _navigationService = navigationService;
-            _routeExporter = exporter;
+            _routeExporter = routeExporter;
+            _placeExporter = placeExporter;
 
-            Export = new DependentRelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes, this, nameof(IsRouteTrackingEnabled), nameof(ExportRoutes));
+            Export = new DependentRelayCommand(DataTransferManager.ShowShareUI,
+                IsExportEnabled, 
+                this, 
+                nameof(IsRouteTrackingEnabled), nameof(ExportRoutes), nameof(IsPlaceTrackingEnabled), nameof(ExportPlaces));
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
@@ -75,6 +80,28 @@ namespace SensorCoreExport.ViewModel
             }
         }
 
+        private bool _isPlaceTrackingEnabled;
+        public bool IsPlaceTrackingEnabled
+        {
+            get { return _isPlaceTrackingEnabled; }
+            set
+            {
+                _isPlaceTrackingEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _exportPlaces;
+        public bool ExportPlaces
+        {
+            get { return _exportPlaces; }
+            set
+            {
+                _exportPlaces = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _isRouteTrackingEnabled;
         public bool IsRouteTrackingEnabled
         {
@@ -85,23 +112,36 @@ namespace SensorCoreExport.ViewModel
                 RaisePropertyChanged();
             }
         }
+
         //TODO: this can be better
         public async Task Initialize()
         {   
             await _routeExporter.Initialize();
+            await _placeExporter.Initialize();
 
             IsRouteTrackingEnabled = _routeExporter.IsEnabled;
             ExportRoutes = IsRouteTrackingEnabled;
+
+            IsPlaceTrackingEnabled = _placeExporter.IsEnabled;
+            ExportPlaces = IsRouteTrackingEnabled;
+        }
+
+        private bool IsExportEnabled()
+        {
+            return (IsRouteTrackingEnabled && ExportRoutes) ||
+                   (IsPlaceTrackingEnabled && ExportPlaces);
         }
 
         private async void OnScreenVisible()
         {
             await _routeExporter.Activate();
+            await _placeExporter.Activate();
         }
 
         private async void OnScreenHidden()
         {
             await _routeExporter.Deactivate();
+            await _placeExporter.Deactivate();
         }
 
         private async void OnShareRequested(DataRequest request)
@@ -133,6 +173,10 @@ namespace SensorCoreExport.ViewModel
             if (ExportRoutes)
             {
                 yield return _routeExporter.Export(from, until);
+            }
+            if (ExportPlaces)
+            {
+                yield return _placeExporter.Export(from, until);
             }
         }
     }

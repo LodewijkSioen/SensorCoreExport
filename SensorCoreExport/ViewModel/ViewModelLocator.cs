@@ -1,4 +1,3 @@
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
@@ -34,6 +33,7 @@ namespace SensorCoreExport.ViewModel
             SimpleIoc.Default.Register<IOHelper>();
             SimpleIoc.Default.Register<Gpx.GpxSerializer>();
             SimpleIoc.Default.Register<RouteExporter>();
+            SimpleIoc.Default.Register<PlaceExporter>();
             SimpleIoc.Default.Register<MainViewModel>();
         }
 
