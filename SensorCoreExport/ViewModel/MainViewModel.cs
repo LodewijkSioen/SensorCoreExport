@@ -8,6 +8,7 @@ using Windows.Storage;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
+using SensorCoreExport.Infrastructure;
 using SensorCoreExport.Services;
 
 namespace SensorCoreExport.ViewModel
@@ -24,7 +25,7 @@ namespace SensorCoreExport.ViewModel
             var ioHelper = new IOHelper();
             _routeExporter = new RouteExporter(ioHelper, serializer);
 
-            Export = new RelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes);
+            Export = new DependentRelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes, this, nameof(IsRouteTrackingEnabled), nameof(ExportRoutes));
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
@@ -73,7 +74,6 @@ namespace SensorCoreExport.ViewModel
             {
                 _exportRoutes = value;
                 RaisePropertyChanged();
-                Export.RaiseCanExecuteChanged();
             }
         }
 
@@ -85,7 +85,6 @@ namespace SensorCoreExport.ViewModel
             {
                 _isRouteTrackingEnabled = value;
                 RaisePropertyChanged();
-                Export.RaiseCanExecuteChanged();
             }
         }
         //TODO: this can be better
