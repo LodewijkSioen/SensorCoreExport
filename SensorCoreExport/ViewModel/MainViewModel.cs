@@ -18,12 +18,10 @@ namespace SensorCoreExport.ViewModel
         private readonly INavigationService _navigationService;
         private readonly RouteExporter _routeExporter;
 
-        public MainViewModel(INavigationService navigationService)
+        public MainViewModel(INavigationService navigationService, RouteExporter exporter)
         {
             _navigationService = navigationService;
-            var serializer = new Gpx.GpxSerializer();
-            var ioHelper = new IOHelper();
-            _routeExporter = new RouteExporter(ioHelper, serializer);
+            _routeExporter = exporter;
 
             Export = new DependentRelayCommand(DataTransferManager.ShowShareUI, () => IsRouteTrackingEnabled && ExportRoutes, this, nameof(IsRouteTrackingEnabled), nameof(ExportRoutes));
             ActivateTracker = new RelayCommand(OnScreenVisible);
