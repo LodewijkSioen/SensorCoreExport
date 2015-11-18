@@ -11,10 +11,13 @@
     <StackPanel Margin="12">
         <TextBlock Style="{ThemeResource TitleTextBlockStyle}">SensorCore Export</TextBlock>
         <TextBlock x:Uid="AboutPageTitle" Text="$About$" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-        <RichTextBlock FontSize="14" TextAlignment="Justify" OverflowContentTarget="{Binding ElementName=firstOverflowContainer}">
-            <Paragraph>
-                <Run>Icon: </Run>
-                <Hyperlink NavigateUri="https://thenounproject.com/term/tracking/165058">tracking by Gerald Wildmoser from the Noun Project</Hyperlink>
+        <RichTextBlock FontSize="20"
+                       Margin="0 0 10 0"
+                       TextAlignment="Justify"
+                       OverflowContentTarget="{Binding ElementName=firstOverflowContainer}">
+            <Paragraph TextIndent="-10" Margin="10 0 0 0">
+                <Run Text="Icon: tracking by Gerald Wildmoser from "/>
+                <Hyperlink NavigateUri="https://thenounproject.com/term/tracking/165058">the Noun Project</Hyperlink>
             </Paragraph>
         </RichTextBlock>
      </StackPanel>
