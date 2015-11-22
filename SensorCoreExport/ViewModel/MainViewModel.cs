@@ -25,20 +25,20 @@ namespace SensorCoreExport.ViewModel
             _routeExporter = routeExporter;
             _placeExporter = placeExporter;
 
-            Export = new DependentRelayCommand(DataTransferManager.ShowShareUI,
+            From = DateTime.Today;
+            Until = DateTime.Today;
+
+            Places = new ExportItemViewModel();
+            Routes = new ExportItemViewModel();
+
+            Export = new MultiDependentRelayCommand(DataTransferManager.ShowShareUI,
                 IsExportEnabled, 
-                this, 
-                nameof(IsRouteTrackingEnabled), nameof(ExportRoutes), nameof(IsPlaceTrackingEnabled), nameof(ExportPlaces));
+                new CommandDependency(Routes, nameof(Routes.IsSelected), nameof(Routes.IsEnabled)),
+                new CommandDependency(Places, nameof(Places.IsSelected), nameof(Places.IsEnabled)));
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
             Settings = new RelayCommand(()=> _navigationService.NavigateTo("Settings"));
-
-            From = DateTime.Today;
-            Until = DateTime.Today;
-
-            IsRouteTrackingEnabled = false;
-            ExportRoutes = false;
         }
 
         public RelayCommand Export { get; private set; }
@@ -69,67 +69,21 @@ namespace SensorCoreExport.ViewModel
             }
         }
 
-        private bool _exportRoutes;
-        public bool ExportRoutes
-        {
-            get { return _exportRoutes; }
-            set
-            {
-                _exportRoutes = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _isPlaceTrackingEnabled;
-        public bool IsPlaceTrackingEnabled
-        {
-            get { return _isPlaceTrackingEnabled; }
-            set
-            {
-                _isPlaceTrackingEnabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _exportPlaces;
-        public bool ExportPlaces
-        {
-            get { return _exportPlaces; }
-            set
-            {
-                _exportPlaces = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _isRouteTrackingEnabled;
-        public bool IsRouteTrackingEnabled
-        {
-            get { return _isRouteTrackingEnabled; }
-            set
-            {
-                _isRouteTrackingEnabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        //TODO: this can be better
+        public ExportItemViewModel Routes { get; }
+        public ExportItemViewModel Places { get; }
+        
         public async Task Initialize()
         {   
             await _routeExporter.Initialize();
             await _placeExporter.Initialize();
 
-            IsRouteTrackingEnabled = _routeExporter.IsEnabled;
-            ExportRoutes = IsRouteTrackingEnabled;
-
-            IsPlaceTrackingEnabled = _placeExporter.IsEnabled;
-            ExportPlaces = IsRouteTrackingEnabled;
+            Places.Setup(_placeExporter.IsEnabled);
+            Routes.Setup(_routeExporter.IsEnabled);
         }
 
         private bool IsExportEnabled()
         {
-            return (IsRouteTrackingEnabled && ExportRoutes) ||
-                   (IsPlaceTrackingEnabled && ExportPlaces);
+            return Places.CanExport() || Routes.CanExport();
         }
 
         private async void OnScreenVisible()
@@ -170,11 +124,11 @@ namespace SensorCoreExport.ViewModel
 
         private IEnumerable<Task<IStorageItem>> GetExportFiles(DateTime from, DateTime until)
         {
-            if (ExportRoutes)
+            if (Routes.IsSelected)
             {
                 yield return _routeExporter.Export(from, until);
             }
-            if (ExportPlaces)
+            if (Places.IsSelected)
             {
                 yield return _placeExporter.Export(from, until);
             }

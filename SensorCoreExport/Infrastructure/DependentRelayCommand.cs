@@ -7,6 +7,42 @@ using GalaSoft.MvvmLight.Command;
 
 namespace SensorCoreExport.Infrastructure
 {
+    public class MultiDependentRelayCommand : RelayCommand
+    {
+        public MultiDependentRelayCommand(Action execute, Func<bool> canExecute, params CommandDependency[] dependencies)
+            : base(execute, canExecute)
+        {
+            foreach (var dependency in dependencies)
+            {
+                dependency.RegisterPropertyChanged(this);
+            }
+        }
+    }
+
+    public class CommandDependency
+    {
+        private readonly INotifyPropertyChanged _target;
+        private readonly string[] _dependentPropertyNames;
+
+        public CommandDependency(INotifyPropertyChanged target, params string[] dependentPropertyNames)
+        {
+            _target = target;
+            _dependentPropertyNames = dependentPropertyNames;
+        }
+
+        public void RegisterPropertyChanged(RelayCommand command)
+        {
+            _target.PropertyChanged += (sender, args) =>
+            {
+                if (_dependentPropertyNames.Contains(args.PropertyName))
+                {
+                    command.RaiseCanExecuteChanged();
+                }
+            };
+        }
+    }
+
+
     public class DependentRelayCommand : RelayCommand
     {
         //Based on http://www.mutzl.com/2014/02/a-smart-mvvm-command/

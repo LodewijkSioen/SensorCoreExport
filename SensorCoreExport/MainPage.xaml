@@ -13,8 +13,8 @@
         <TextBlock x:Uid="ExportPageTitle" Text="$Export$" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         <DatePicker x:Uid="DatePickerFrom" Header="$From$" Date="{Binding From, Mode=TwoWay}" />
         <DatePicker x:Uid="DatePickerUntil" Header="$Until$" Date="{Binding Until, Mode=TwoWay}" />
-        <CheckBox x:Uid="CheckBoxRoutes" IsChecked="{Binding ExportRoutes, Mode=TwoWay}" IsEnabled="{Binding IsRouteTrackingEnabled, Mode=OneWay}" Content="$Export Routes$"/>
-        <CheckBox x:Uid="CheckBoxPlaces" IsChecked="{Binding ExportPlaces, Mode=TwoWay}" IsEnabled="{Binding IsPlaceTrackingEnabled, Mode=OneWay}" Content="$Export Places"/>
+        <CheckBox x:Uid="CheckBoxRoutes" IsChecked="{Binding Routes.IsSelected, Mode=TwoWay}" IsEnabled="{Binding Routes.IsEnabled, Mode=OneWay}" Content="$Export Routes$"/>
+        <CheckBox x:Uid="CheckBoxPlaces" IsChecked="{Binding Places.IsSelected, Mode=TwoWay}" IsEnabled="{Binding Routes.IsEnabled, Mode=OneWay}" Content="$Export Places"/>
     </StackPanel>
     <Page.BottomAppBar>
         <CommandBar>
