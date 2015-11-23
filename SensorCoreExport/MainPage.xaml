@@ -15,6 +15,7 @@
         <DatePicker x:Uid="DatePickerUntil" Header="$Until$" Date="{Binding Until, Mode=TwoWay}" />
         <CheckBox x:Uid="CheckBoxRoutes" IsChecked="{Binding Routes.IsSelected, Mode=TwoWay}" IsEnabled="{Binding Routes.IsEnabled, Mode=OneWay}" Content="$Export Routes$"/>
         <CheckBox x:Uid="CheckBoxPlaces" IsChecked="{Binding Places.IsSelected, Mode=TwoWay}" IsEnabled="{Binding Routes.IsEnabled, Mode=OneWay}" Content="$Export Places"/>
+        <CheckBox x:Uid="CheckBoxSteps" IsChecked="{Binding Steps.IsSelected, Mode=TwoWay}" IsEnabled="{Binding Steps.IsEnabled, Mode=OneWay}" Content="$Export Steps"/>
     </StackPanel>
     <Page.BottomAppBar>
         <CommandBar>

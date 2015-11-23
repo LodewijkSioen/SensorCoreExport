@@ -126,6 +126,9 @@
   <data name="CheckBoxRoutes.Content" xml:space="preserve">
     <value>Export Routes</value>
   </data>
+  <data name="CheckBoxSteps.Content" xml:space="preserve">
+    <value>Export Steps</value>
+  </data>
   <data name="DatePickerFrom.Header" xml:space="preserve">
     <value>From</value>
   </data>
