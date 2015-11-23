@@ -34,6 +34,7 @@ namespace SensorCoreExport.ViewModel
             SimpleIoc.Default.Register<Gpx.GpxSerializer>();
             SimpleIoc.Default.Register<RouteExporter>();
             SimpleIoc.Default.Register<PlaceExporter>();
+            SimpleIoc.Default.Register<StepExporter>();
             SimpleIoc.Default.Register<MainViewModel>();
         }
 

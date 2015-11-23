@@ -18,23 +18,27 @@ namespace SensorCoreExport.ViewModel
         private readonly INavigationService _navigationService;
         private readonly RouteExporter _routeExporter;
         private readonly PlaceExporter _placeExporter;
+        private readonly StepExporter _stepExporter;
 
-        public MainViewModel(INavigationService navigationService, RouteExporter routeExporter, PlaceExporter placeExporter)
+        public MainViewModel(INavigationService navigationService, RouteExporter routeExporter, PlaceExporter placeExporter, StepExporter stepExporter)
         {
             _navigationService = navigationService;
             _routeExporter = routeExporter;
             _placeExporter = placeExporter;
+            _stepExporter = stepExporter;
 
             From = DateTime.Today;
             Until = DateTime.Today;
 
             Places = new ExportItemViewModel();
             Routes = new ExportItemViewModel();
+            Steps = new ExportItemViewModel();
 
             Export = new MultiDependentRelayCommand(DataTransferManager.ShowShareUI,
                 IsExportEnabled, 
                 new CommandDependency(Routes, nameof(Routes.IsSelected), nameof(Routes.IsEnabled)),
-                new CommandDependency(Places, nameof(Places.IsSelected), nameof(Places.IsEnabled)));
+                new CommandDependency(Places, nameof(Places.IsSelected), nameof(Places.IsEnabled)),
+                new CommandDependency(Steps, nameof(Steps.IsSelected), nameof(Steps.IsEnabled)));
             ActivateTracker = new RelayCommand(OnScreenVisible);
             DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
@@ -71,31 +75,36 @@ namespace SensorCoreExport.ViewModel
 
         public ExportItemViewModel Routes { get; }
         public ExportItemViewModel Places { get; }
-        
+        public ExportItemViewModel Steps { get; }
+
         public async Task Initialize()
         {   
             await _routeExporter.Initialize();
             await _placeExporter.Initialize();
+            await _stepExporter.Initialize();
 
             Places.Setup(_placeExporter.IsEnabled);
             Routes.Setup(_routeExporter.IsEnabled);
+            Steps.Setup(_stepExporter.IsEnabled);
         }
 
         private bool IsExportEnabled()
         {
-            return Places.CanExport() || Routes.CanExport();
+            return Places.CanExport() || Routes.CanExport() || Steps.CanExport();
         }
 
         private async void OnScreenVisible()
         {
             await _routeExporter.Activate();
             await _placeExporter.Activate();
+            await _stepExporter.Activate();
         }
 
         private async void OnScreenHidden()
         {
             await _routeExporter.Deactivate();
             await _placeExporter.Deactivate();
+            await _stepExporter.Deactivate();
         }
 
         private async void OnShareRequested(DataRequest request)
@@ -131,6 +140,10 @@ namespace SensorCoreExport.ViewModel
             if (Places.IsSelected)
             {
                 yield return _placeExporter.Export(from, until);
+            }
+            if (Steps.IsSelected)
+            {
+                yield return _stepExporter.Export(from, until);
             }
         }
     }

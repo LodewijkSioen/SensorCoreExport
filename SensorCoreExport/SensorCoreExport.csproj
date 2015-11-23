@@ -95,6 +95,7 @@
     <Compile Include="Services\IOHelper.cs" />
     <Compile Include="Services\PlaceExporter.cs" />
     <Compile Include="Services\RouteExporter.cs" />
+    <Compile Include="Services\StepExporter.cs" />
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
