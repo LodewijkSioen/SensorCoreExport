@@ -4,6 +4,7 @@ using Lumia.Sense;
 using Windows.Storage;
 using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
 
 namespace SensorCoreExport.Services
 {
@@ -26,7 +27,7 @@ namespace SensorCoreExport.Services
                 var serializer = new JsonSerializer();
                 using (var sw = new StreamWriter(s))
                 {
-                    serializer.Serialize(sw, steps);
+                    serializer.Serialize(sw, steps.ToArray());
                 }
             });
         }
