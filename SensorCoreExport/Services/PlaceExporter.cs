@@ -28,9 +28,9 @@ namespace SensorCoreExport.Services
             return await PlaceMonitor.IsSupportedAsync();
         }
 
-        public override async Task<IStorageItem> Export(DateTimeOffset from, DateTimeOffset until)
+        protected override async Task<IStorageItem> Export(IPlaceMonitor sensor, DateTimeOffset from, DateTimeOffset until)
         {
-            var places = await Sensor.GetPlaceHistoryAsync(from, until - from);
+            var places = await sensor.GetPlaceHistoryAsync(from, until - from);
 
             return await _ioHelper.WriteToFile($"SensorCore.Places.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", s => {
                 _serialize.Serialize(places, s);

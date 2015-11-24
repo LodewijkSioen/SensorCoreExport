@@ -21,19 +21,7 @@ namespace SensorCoreExport
         {
             this.InitializeComponent();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
-
-            Window.Current.VisibilityChanged += (oo, ee) =>
-            {
-                if (ee.Visible)
-                {
-                    ViewModel.ActivateTracker.Execute(null);
-                }
-                else
-                {
-                    ViewModel.DeactivateTracker.Execute(null);
-                }
-            };
+            this.NavigationCacheMode = NavigationCacheMode.Required;            
         }
 
         /// <summary>

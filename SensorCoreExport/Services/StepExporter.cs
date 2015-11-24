@@ -9,7 +9,7 @@ using System.Linq;
 namespace SensorCoreExport.Services
 {
     public class StepExporter
-        : BaseExporter<StepCounter>
+        : BaseExporter<IStepCounter>
     {
         private IOHelper _ioHelper;
 
@@ -18,9 +18,9 @@ namespace SensorCoreExport.Services
             _ioHelper = ioHelper;
         }
 
-        public async override Task<IStorageItem> Export(DateTimeOffset from, DateTimeOffset until)
+        protected async override Task<IStorageItem> Export(IStepCounter sensor, DateTimeOffset from, DateTimeOffset until)
         {
-            var steps = await Sensor.GetStepCountHistoryAsync(from, until - from);
+            var steps = await sensor.GetStepCountHistoryAsync(from, until - from);
 
             return await _ioHelper.WriteToFile($"SensorCore.Steps.{from:yyyyMMdd}-{until:yyyyMMdd}.json", s => 
             {
@@ -32,7 +32,7 @@ namespace SensorCoreExport.Services
             });
         }
 
-        protected async override Task<StepCounter> GetDefaultSensor()
+        protected async override Task<IStepCounter> GetDefaultSensor()
         {
             return await StepCounter.GetDefaultAsync();
         }

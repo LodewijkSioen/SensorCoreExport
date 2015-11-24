@@ -39,15 +39,11 @@ namespace SensorCoreExport.ViewModel
                 new CommandDependency(Routes, nameof(Routes.IsSelected), nameof(Routes.IsEnabled)),
                 new CommandDependency(Places, nameof(Places.IsSelected), nameof(Places.IsEnabled)),
                 new CommandDependency(Steps, nameof(Steps.IsSelected), nameof(Steps.IsEnabled)));
-            ActivateTracker = new RelayCommand(OnScreenVisible);
-            DeactivateTracker = new RelayCommand(OnScreenHidden);
             ShareRequested = new RelayCommand<DataRequest>(OnShareRequested);
             Settings = new RelayCommand(()=> _navigationService.NavigateTo("Settings"));
         }
 
         public RelayCommand Export { get; private set; }
-        public ICommand ActivateTracker { get; private set; }
-        public ICommand DeactivateTracker { get; private set; }
         public RelayCommand<DataRequest> ShareRequested { get; private set; }
         public ICommand Settings { get; private set; }
         
@@ -91,20 +87,6 @@ namespace SensorCoreExport.ViewModel
         private bool IsExportEnabled()
         {
             return Places.CanExport() || Routes.CanExport() || Steps.CanExport();
-        }
-
-        private async void OnScreenVisible()
-        {
-            await _routeExporter.Activate();
-            await _placeExporter.Activate();
-            await _stepExporter.Activate();
-        }
-
-        private async void OnScreenHidden()
-        {
-            await _routeExporter.Deactivate();
-            await _placeExporter.Deactivate();
-            await _stepExporter.Deactivate();
         }
 
         private async void OnShareRequested(DataRequest request)

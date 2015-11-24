@@ -29,9 +29,9 @@ namespace SensorCoreExport.Services
             return await TrackPointMonitor.IsSupportedAsync();
         }
 
-        public override async Task<IStorageItem> Export(DateTimeOffset from, DateTimeOffset until)
+        protected override async Task<IStorageItem> Export(ITrackPointMonitor sensor, DateTimeOffset from, DateTimeOffset until)
         {
-            var points = await Sensor.GetTrackPointsAsync(from, until-from);
+            var points = await sensor.GetTrackPointsAsync(from, until-from);
             var orderedPoints = points.Where(p => p.Timestamp >= from).OrderBy(p => p.Timestamp);
 
             return await _ioHelper.WriteToFile($"SensorCore.Routes.{from:yyyyMMdd}-{until:yyyyMMdd}.gpx", s => {
